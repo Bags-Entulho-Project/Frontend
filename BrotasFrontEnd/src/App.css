@@ -1,0 +1,18 @@
+.formStyle{
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+html, body, #root{
+  margin: 0;
+  height: 100%;
+}
+
+.login{
+  width: 60vh;
+  padding: 3vh;
+  border: 2px;
+  border-style: groove;
+}
