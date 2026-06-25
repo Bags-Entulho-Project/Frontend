@@ -4,7 +4,7 @@ const pathsWithoutJwt = [
 export const API = axios.create({
   baseURL: "http://localhost:8080",
   withCredentials: true,
-})
+});
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -32,4 +32,32 @@ API.interceptors.response.use(
     }
     return Promise.reject(error);
   },
-)
+);
+export const baseQuery = () => async ({
+  url,
+  method,
+  data,
+  params,
+  headers,
+}) => {
+  try {
+    const result = await API({
+      url,
+      method,
+      data,
+      params,
+      headers,
+      withCredentials: true,
+    });
+
+    return { data: result.data };
+  } catch (axiosError) {
+    const err = axiosError;
+    return {
+      error: {
+        status: err.response?.status,
+        data: err.response?.data || err.message,
+      },
+    };
+  }
+};

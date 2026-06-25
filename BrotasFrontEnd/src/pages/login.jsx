@@ -1,5 +1,5 @@
 import { Form, Input, Button } from "antd";
-import { escrever } from "../store/slices/test";
+import { userAuthenticated } from "../store/slices/auth/test.js";
 import { useSelector, useDispatch } from "react-redux";
 
 function login() {
@@ -8,7 +8,7 @@ function login() {
   const count = useSelector((state) => state.test);
 
   const onFinish = () => {
-    dispatch(escrever({...form.getFieldsValue()}));
+    dispatch(userAuthenticated({ ...form.getFieldsValue() }));
   };
 
   return (

@@ -1,14 +1,22 @@
-import { Navigate, Routes, Route } from 'react-router-dom';
-import './App.css'
+import { Navigate, Routes, Route } from "react-router-dom";
+import "./App.css";
 import Login from "./pages/login";
+import LandingPage from "./pages/landingPage";
+import { lazy } from "react";
+const Pagelayout = lazy(() => import("./layout/pageLayout"));
 
 function App() {
-  return( 
+  return (
     <Routes>
-      <Route index element={<Navigate to="/login"/>}/>
-      <Route path="/login" element={<Login/>}/>
+      <Route path="/" element={
+        <Pagelayout />
+      }>
+        <Route index element={<Navigate to="/home" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<LandingPage />} />
+      </Route>
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
