@@ -1,5 +1,5 @@
 import { Form, Input, Button } from "antd";
-import { userAuthenticated } from "../store/slices/auth/test.js";
+import { userAuthenticated } from "../../store/slices/auth/test.js";
 import { useSelector, useDispatch } from "react-redux";
 
 function login() {

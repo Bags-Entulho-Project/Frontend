@@ -1,18 +1,66 @@
-.formStyle{
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-html, body, #root{
-  margin: 0;
+.formStyle {
+  display: flex;
   height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
-.login{
+html,
+body,
+h1,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+.login {
   width: 60vh;
   padding: 3vh;
   border: 2px;
   border-style: groove;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title-landinpage {
+  background: linear-gradient(135deg, #1b5e20 0%, #6a1b9a 100%);
+  padding: 80px 40px;
+  text-align: center;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.h1-landingpage {
+  font-size: 48px;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.h2-landingpage {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #333;
+  font-weight: bold;
+}
+
+.p-landingpage {
+  font-size: 18px;
+  color: #f0f0f0;
+  margin: 0;
+  max-width: 600px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.card-landing {
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
