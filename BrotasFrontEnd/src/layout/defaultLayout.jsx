@@ -14,14 +14,19 @@ function DefaultLayout({ children }) {
     },
     {
       key: "1",
-      label: <Link to="/login">Login</Link>,
-      name: "/login",
-    },
-    {
-      key: "2",
       label: <Link to="/pessoa">Pessoa</Link>,
       name: "/pessoa",
     },
+    {
+      key: "2",
+      label: <Link to="/bag">Bag</Link>,
+      name: "/bag",
+    },
+    { 
+      key: "3",
+      label: <Link to="/alocacao">Alocação</Link>,
+      name: "/alocacao",
+    }
   ];
 
   const selectedKey = useMemo(() => {

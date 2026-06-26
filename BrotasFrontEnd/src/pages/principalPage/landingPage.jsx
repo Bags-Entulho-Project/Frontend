@@ -1,4 +1,6 @@
 import { Col, Row, Card } from "antd";
+import { Handshake, LeafyGreen, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function landingPage() {
   return (
@@ -25,26 +27,32 @@ function landingPage() {
         <Row gutter={[24, 24]} justify="center">
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Solução 1"
+              title="Cadastre Seus Cidadões"
               className="card-landing"
+              classNames={{body: "card-landing-body"}}
             >
-              Adicione o conteúdo da primeira solução aqui.
+              <User className="icon-landing"/>
+              <Link to="/pessoa">Clique aqui para cadastrar pessoas</Link>
             </Card>
           </Col>
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Solução 2"
+              title="Cadastre Suas Bags"
               className="card-landing"
+              classNames={{body: "card-landing-body"}}
             >
-              Adicione o conteúdo da segunda solução aqui.
+              <LeafyGreen className="icon-landing" color="#237D46"/>
+              <Link to="/bag">Clique aqui para cadastrar uma bag</Link>
             </Card>
           </Col>
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Solução 3"
+              title="Cadastre Suas Alocações"
               className="card-landing"
+              classNames={{body: "card-landing-body"}}
             >
-              Adicione o conteúdo da terceira solução aqui.
+              <Handshake className="icon-landing" color="#92e2e3"/>
+              <Link to="/pessoa">Clique aqui para cadastrar pessoas</Link>
             </Card>
           </Col>
         </Row>
