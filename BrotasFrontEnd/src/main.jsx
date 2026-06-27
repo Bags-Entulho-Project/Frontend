@@ -8,7 +8,15 @@ import { Provider } from "react-redux";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ConfigProvider>
+    <ConfigProvider
+      theme={{
+        components: {
+          Button: {
+            colorPrimary: "#001529",
+          },
+        },
+      }}
+    >
       <BrowserRouter>
         <Provider store={store}>
           <App>

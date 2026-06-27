@@ -1,5 +1,5 @@
 import { Form, Input, Button } from "antd";
-import { userAuthenticated } from "../../store/slices/auth/pessoa.js";
+import { adicionarPessoa } from "../../store/slices/pessoa/pessoa.js";
 import { useSelector, useDispatch } from "react-redux";
 
 function login() {
@@ -8,7 +8,7 @@ function login() {
   const count = useSelector((state) => state.test);
 
   const onFinish = () => {
-    dispatch(userAuthenticated({ ...form.getFieldsValue() }));
+    dispatch(pessoa({ ...form.getFieldsValue() }));
   };
 
   return (

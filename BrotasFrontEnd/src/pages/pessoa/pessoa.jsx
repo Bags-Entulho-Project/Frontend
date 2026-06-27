@@ -1,56 +1,127 @@
-import { Card, Layout, Table } from "antd";
+import { Form, Button, Card, Layout, Table, Drawer, Input } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useSelector, useDispatch } from "react-redux";
-
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { adicionarPessoa, tirarPessoa } from "../../store/slices/pessoa/pessoa";
 
 function pessoa() {
-    const dispatch = useDispatch();
-    const pessoas = useSelector((state) => state.pessoa);
-
-
-  const data = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
+  const pessoas = useSelector((state) => state.pessoa.pessoa);
+  const [isOpen, setIsOpen] = useState(false);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const adsada = []
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Nome",
+      dataIndex: "nome",
+      key: "nome",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Cpf",
+      dataIndex: "cpf",
+      key: "cpf",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Fone",
+      dataIndex: "fone",
+      key: "fone",
+    },
+    {
+      title: "Celular",
+      dataIndex: "celular",
+      key: "celular",
+    },
+    {
+      title: "Ações",
+      key: "actions",
+      width: "100px",
+      render: (_, record) => (
+        <div style={{ display: "flex", gap: "8px", flexDirection: "row-reverse",}}>
+          <Button size="small">Editar</Button>
+          <Button size="small" danger onClick={() => dispatch(tirarPessoa({ id: record.id }))}>
+            Excluir
+          </Button>
+        </div>
+      ),
     },
   ];
+
+  const handleSubmit = (values) => {
+    dispatch(adicionarPessoa({id: pessoas.length, key: pessoas.length, ...values}))
+    form.resetFields();
+    setIsOpen(false);
+  };
+
+  const handleCancel = () => {
+    form.resetFields();
+    setIsOpen(false);
+  };
 
   return (
     <>
       <Layout className="card-pessoa">
         <Content>
-          <Card title="Tabela de Pessoas"  classNames={{header:"card-pessoa-head"}}>
+          <Card
+            title="Tabela de Pessoas"
+            classNames={{ header: "card-pessoa-head" }}
+            extra={
+              <Button type="primary" onClick={() => setIsOpen(true)}>
+                Novo
+              </Button>
+            }
+          >
             <Table
-              dataSource={data}
-              columns={columns} style={{width: "130vh"}}
+              dataSource={pessoas}
+              columns={columns}
+              style={{ width: "130vh" }}
             />
           </Card>
+          <Drawer
+            title="Adicionar Pessoa"
+            open={isOpen}
+            onClose={handleCancel}
+            size={420}
+          >
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+              <Form.Item
+                label="Nome"
+                name="nome"
+                rules={[{ required: true, message: "Informe o nome" }]}
+              >
+                <Input placeholder="Digite o nome" />
+              </Form.Item>
+
+              <Form.Item
+                label="CPF"
+                name="cpf"
+                rules={[{ required: true, message: "Informe o CPF" }]}
+              >
+                <Input placeholder="Digite o CPF" />
+              </Form.Item>
+
+              <Form.Item label="Fone (fixo)" name="fone">
+                <Input placeholder="Digite o telefone" />
+              </Form.Item>
+
+              <Form.Item label="Celular" name="celular">
+                <Input placeholder="Digite o celular" />
+              </Form.Item>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "8px",
+                }}
+              >
+                <Button onClick={handleCancel}>Cancelar</Button>
+                <Button type="primary" htmlType="submit">
+                  Salvar
+                </Button>
+              </div>
+            </Form>
+          </Drawer>
         </Content>
       </Layout>
     </>

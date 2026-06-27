@@ -25,7 +25,7 @@ export const authApi = create({
           };
         }
         console.log(response)
-        // dispatch(userAuthenticated())
+        // dispatch(userAuthenticated())'
       },
     }),
   }),
