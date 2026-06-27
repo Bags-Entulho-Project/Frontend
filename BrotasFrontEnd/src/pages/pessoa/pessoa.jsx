@@ -1,7 +1,13 @@
 import { Card, Layout, Table } from "antd";
 import { Content } from "antd/es/layout/layout";
+import { useSelector, useDispatch } from "react-redux";
+
 
 function pessoa() {
+    const dispatch = useDispatch();
+    const pessoas = useSelector((state) => state.pessoa);
+
+
   const data = [
     {
       key: "1",
@@ -39,7 +45,7 @@ function pessoa() {
     <>
       <Layout className="card-pessoa">
         <Content>
-          <Card title="Tabela de Pessoas">
+          <Card title="Tabela de Pessoas"  classNames={{header:"card-pessoa-head"}}>
             <Table
               dataSource={data}
               columns={columns} style={{width: "130vh"}}

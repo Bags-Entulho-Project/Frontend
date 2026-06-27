@@ -87,3 +87,7 @@ h1,
   align-items: center;
   margin: 10% 0;
 }
+
+.card-pessoa-head.ant-card-head{
+  border-bottom: none;
+}
