@@ -1,4 +1,13 @@
-import { Button, Card, Drawer, Form, Input, Layout, Table } from "antd";
+import {
+  Button,
+  Card,
+  Drawer,
+  Form,
+  Input,
+  Layout,
+  Popover,
+  Table,
+} from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,6 +16,7 @@ import {
   excluirBag,
 } from "../../store/slices/bag/bag";
 import { useState } from "react";
+import { CirclePlus } from "lucide-react";
 
 function bag() {
   const bags = useSelector((state) => state.bag.bag);
@@ -42,33 +52,50 @@ function bag() {
       title: "Ações",
       key: "actions",
       width: "100px",
+      className: "action-column",
       render: (_, record) => (
-        <div
-          style={{ display: "flex", gap: "8px", flexDirection: "row-reverse" }}
+        <Popover
+          content={
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row-reverse",
+                }}
+              >
+                <Button
+                  size="small"
+                  onClick={() => {
+                    form.setFieldsValue({
+                      numero: record.numero,
+                      observacao: record.observacao,
+                    });
+
+                    setId(record.id);
+                    setIsOpen(true);
+                    setIsEditing(true);
+                  }}
+                >
+                  Editar
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  onClick={() => dispatch(excluirBag({ id: record.id }))}
+                >
+                  Excluir
+                </Button>
+              </div>
+            </>
+          }
+          trigger="click"
         >
           <Button
-            size="small"
-            onClick={() => {
-              form.setFieldsValue({
-                numero: record.numero,
-                observacao: record.observacao,
-              });
-
-              setId(record.id);
-              setIsOpen(true);
-              setIsEditing(true);
-            }}
-          >
-            Editar
-          </Button>
-          <Button
-            size="small"
-            danger
-            onClick={() => dispatch(excluirBag({ id: record.id }))}
-          >
-            Excluir
-          </Button>
-        </div>
+            type={"text"}
+            icon={<CirclePlus cursor="pointer" color="#001529" opacity={0.5} />}
+          ></Button>
+        </Popover>
       ),
     },
   ];
@@ -77,7 +104,14 @@ function bag() {
     if (isEditing) {
       dispatch(editarBag({ id: id, ...values }));
     } else {
-      dispatch(adicionarBag({ id: bags.length, key: bags.length, disponivel: true,...values }));
+      dispatch(
+        adicionarBag({
+          id: bags.length,
+          key: bags.length,
+          disponivel: true,
+          ...values,
+        }),
+      );
     }
     form.resetFields();
     setIsOpen(false);
@@ -94,11 +128,11 @@ function bag() {
 
   return (
     <>
-      <Layout className="card-pessoa">
+      <Layout className="card-tables">
         <Content>
           <Card
             title="Tabela de Bags"
-            classNames={{ header: "card-pessoa-head" }}
+            classNames={{ header: "card-table-head" }}
             extra={
               <Button type="primary" onClick={() => setIsOpen(true)}>
                 Novo

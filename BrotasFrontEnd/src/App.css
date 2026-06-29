@@ -81,13 +81,18 @@ h1,
   margin-bottom: 3px;
 }
 
-.card-pessoa {
+.card-tables {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 10% 0;
 }
 
-.card-pessoa-head.ant-card-head{
+.card-table-head.ant-card-head{
   border-bottom: none;
+}
+
+.action-column{
+  display: flex;
+  justify-content: center;
 }

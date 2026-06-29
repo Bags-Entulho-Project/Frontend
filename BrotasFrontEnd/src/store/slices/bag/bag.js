@@ -26,11 +26,17 @@ export const bagSlice = createSlice({
       editar.observacao = action.payload.observacao;
     },
 
+    changeStatus: (state, action) => {
+      var editar = state.bag.find((b) => b.id == action.payload.id);
+      console.log("editos changlog", !editar.disponivel)
+      editar.disponivel = !editar.disponivel;
+    },
+
     excluirBag: (state, action) => {
       state.bag = state.bag.filter((b) => b.id !== action.payload.id);
     },
   },
 });
 
-export const { adicionarBag, editarBag, excluirBag } = bagSlice.actions;
+export const { adicionarBag, editarBag, changeStatus, excluirBag } = bagSlice.actions;
 export default bagSlice.reducer;

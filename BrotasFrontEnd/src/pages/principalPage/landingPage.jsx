@@ -52,7 +52,7 @@ function landingPage() {
               classNames={{body: "card-landing-body"}}
             >
               <Handshake className="icon-landing" color="#92e2e3"/>
-              <Link to="/pessoa">Clique aqui para cadastrar pessoas</Link>
+              <Link to="/alocacao">Clique aqui para cadastrar pessoas</Link>
             </Card>
           </Col>
         </Row>

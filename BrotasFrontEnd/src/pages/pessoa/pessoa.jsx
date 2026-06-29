@@ -1,4 +1,13 @@
-import { Form, Button, Card, Layout, Table, Drawer, Input } from "antd";
+import {
+  Form,
+  Button,
+  Card,
+  Layout,
+  Table,
+  Drawer,
+  Input,
+  Popover,
+} from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +16,7 @@ import {
   editarPessoa,
   tirarPessoa,
 } from "../../store/slices/pessoa/pessoa";
+import { CirclePlus } from "lucide-react";
 
 function pessoa() {
   const pessoas = useSelector((state) => state.pessoa.pessoa);
@@ -41,34 +51,50 @@ function pessoa() {
       title: "Ações",
       key: "actions",
       width: "100px",
+      className: "action-column",
       render: (_, record) => (
-        <div
-          style={{ display: "flex", gap: "8px", flexDirection: "row-reverse" }}
+        <Popover
+          content={
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row-reverse",
+                }}
+              >
+                <Button
+                  size="small"
+                  onClick={() => {
+                    form.setFieldsValue({
+                      nome: record.nome,
+                      cpf: record.cpf,
+                      fone: record.fone,
+                      celular: record.celular,
+                    });
+                    setId(record.id);
+                    setIsOpen(true);
+                    setIsEditing(true);
+                  }}
+                >
+                  Editar
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  onClick={() => dispatch(tirarPessoa({ id: record.id }))}
+                >
+                  Excluir
+                </Button>
+              </div>
+            </>
+          }
         >
           <Button
-            size="small"
-            onClick={() => {
-              form.setFieldsValue({
-                nome: record.nome,
-                cpf: record.cpf,
-                fone: record.fone,
-                celular: record.celular,
-              });
-              setId(record.id);
-              setIsOpen(true);
-              setIsEditing(true);
-            }}
-          >
-            Editar
-          </Button>
-          <Button
-            size="small"
-            danger
-            onClick={() => dispatch(tirarPessoa({ id: record.id }))}
-          >
-            Excluir
-          </Button>
-        </div>
+            type={"text"}
+            icon={<CirclePlus cursor="pointer" color="#001529" opacity={0.5} />}
+          ></Button>
+        </Popover>
       ),
     },
   ];
@@ -96,11 +122,11 @@ function pessoa() {
 
   return (
     <>
-      <Layout className="card-pessoa">
+      <Layout className="card-tables">
         <Content>
           <Card
             title="Tabela de Pessoas"
-            classNames={{ header: "card-pessoa-head" }}
+            classNames={{ header: "card-table-head" }}
             extra={
               <Button type="primary" onClick={() => setIsOpen(true)}>
                 Novo
