@@ -13,12 +13,20 @@ const initialState = {
   ],
 };
 
-export const testSlice = createSlice({
+export const pessoaSlice = createSlice({
   name: "pessoa",
   initialState,
   reducers: {
     adicionarPessoa: (state, action) => {
       state.pessoa.push({...action.payload});
+    },
+
+    editarPessoa:(state, action) =>{
+      let editar = state.pessoa.find((p) => p.id == action.payload.id);
+      editar.nome = action.payload.nome;
+      editar.cpf = action.payload.cpf;
+      editar.fone = action.payload.fone;
+      editar.celular = action.payload.celular
     },
 
     tirarPessoa: (state, action) => {
@@ -27,5 +35,5 @@ export const testSlice = createSlice({
   },
 });
 
-export const { adicionarPessoa, tirarPessoa } = testSlice.actions;
-export default testSlice.reducer;
+export const { adicionarPessoa, editarPessoa, tirarPessoa } = pessoaSlice.actions;
+export default pessoaSlice.reducer;

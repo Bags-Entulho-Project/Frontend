@@ -2,14 +2,19 @@ import { Form, Button, Card, Layout, Table, Drawer, Input } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { adicionarPessoa, tirarPessoa } from "../../store/slices/pessoa/pessoa";
+import {
+  adicionarPessoa,
+  editarPessoa,
+  tirarPessoa,
+} from "../../store/slices/pessoa/pessoa";
 
 function pessoa() {
   const pessoas = useSelector((state) => state.pessoa.pessoa);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [id, setId] = useState();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const adsada = []
 
   const columns = [
     {
@@ -37,9 +42,30 @@ function pessoa() {
       key: "actions",
       width: "100px",
       render: (_, record) => (
-        <div style={{ display: "flex", gap: "8px", flexDirection: "row-reverse",}}>
-          <Button size="small">Editar</Button>
-          <Button size="small" danger onClick={() => dispatch(tirarPessoa({ id: record.id }))}>
+        <div
+          style={{ display: "flex", gap: "8px", flexDirection: "row-reverse" }}
+        >
+          <Button
+            size="small"
+            onClick={() => {
+              form.setFieldsValue({
+                nome: record.nome,
+                cpf: record.cpf,
+                fone: record.fone,
+                celular: record.celular,
+              });
+              setId(record.id);
+              setIsOpen(true);
+              setIsEditing(true);
+            }}
+          >
+            Editar
+          </Button>
+          <Button
+            size="small"
+            danger
+            onClick={() => dispatch(tirarPessoa({ id: record.id }))}
+          >
             Excluir
           </Button>
         </div>
@@ -48,14 +74,24 @@ function pessoa() {
   ];
 
   const handleSubmit = (values) => {
-    dispatch(adicionarPessoa({id: pessoas.length, key: pessoas.length, ...values}))
+    if (isEditing) {
+      dispatch(editarPessoa({ id: id, ...values }));
+    } else {
+      dispatch(
+        adicionarPessoa({ id: pessoas.length, key: pessoas.length, ...values }),
+      );
+    }
     form.resetFields();
     setIsOpen(false);
+    setIsEditing(false);
+    setId(null);
   };
 
   const handleCancel = () => {
     form.resetFields();
     setIsOpen(false);
+    setIsEditing(false);
+    setId(null);
   };
 
   return (
@@ -117,7 +153,7 @@ function pessoa() {
               >
                 <Button onClick={handleCancel}>Cancelar</Button>
                 <Button type="primary" htmlType="submit">
-                  Salvar
+                  {isEditing ? "Editar" : "Salvar"}
                 </Button>
               </div>
             </Form>
