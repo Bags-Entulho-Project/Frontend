@@ -27,7 +27,7 @@ function landingPage() {
         <Row gutter={[24, 24]} justify="center">
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Cadastre Seus Cidadões"
+              title="Cadastro de Cidadãos"
               className="card-landing"
               classNames={{body: "card-landing-body"}}
             >
@@ -37,7 +37,7 @@ function landingPage() {
           </Col>
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Cadastre Suas Bags"
+              title="Cadastro de Bags"
               className="card-landing"
               classNames={{body: "card-landing-body"}}
             >
@@ -47,7 +47,7 @@ function landingPage() {
           </Col>
           <Col xs={24} sm={24} md={8}>
             <Card
-              title="Cadastre Suas Alocações"
+              title="Cadastro de Alocações"
               className="card-landing"
               classNames={{body: "card-landing-body"}}
             >
