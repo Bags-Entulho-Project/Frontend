@@ -42,7 +42,7 @@ export const baseQuery = () => async ({
 }) => {
   try {
     const result = await API({
-      url,
+      url: "http://localhost:8080/api/" + url,
       method,
       data,
       params,
