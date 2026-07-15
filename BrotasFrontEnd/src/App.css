@@ -1,18 +1,98 @@
-.formStyle{
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-html, body, #root{
-  margin: 0;
+.formStyle {
+  display: flex;
   height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
-.login{
+html,
+body,
+h1,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+.login {
   width: 60vh;
   padding: 3vh;
   border: 2px;
   border-style: groove;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.title-landinpage {
+  background: linear-gradient(135deg, #1b5e20 0%, #6a1b9a 100%);
+  padding: 80px 40px;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.h1-landingpage {
+  font-size: 48px;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.h2-landingpage {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #333;
+  font-weight: bold;
+}
+
+.p-landingpage {
+  font-size: 18px;
+  color: #f0f0f0;
+  margin: 0;
+  max-width: 600px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.card-landing {
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.card-landing-body.ant-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon-landing {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 3px;
+}
+
+.card-tables {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10% 0;
+}
+
+.card-table-head.ant-card-head{
+  border-bottom: none;
+}
+
+.action-column{
+  display: flex;
+  justify-content: center;
 }
