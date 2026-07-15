@@ -7,7 +7,7 @@ export const loginApi = createApi({
   baseQuery: baseQuery({
     headers: { "Content-Type": "application/json" },
   }),
-  tagTypes: ['Logged']
+  tagTypes: ['Logged'],
   endpoints: (build) =>({
     postLogin: build.mutation({
         queryFn: async (args, {dispatch}, _, fetchWithBaseQuery ) => {
@@ -17,6 +17,7 @@ export const loginApi = createApi({
                     method: "POST",
                     data: args,
                 }))
+                console.log("responmse", response);
             }
             catch (err){
                 return {
@@ -26,9 +27,9 @@ export const loginApi = createApi({
             },
           };
             }
-        }
+        },
     })
   }),
 });
 
-export const {}
+export const {usePostLoginMutation} = loginApi

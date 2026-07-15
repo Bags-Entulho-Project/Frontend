@@ -2,14 +2,16 @@ import { Form, Input, Button } from "antd";
 import { adicionarPessoa } from "../../store/slices/pessoa/pessoa.js";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFill } from "../../store/slices/login/login.js";
+import { usePostLoginMutation } from "../../store/slices/login/queries.js";
 
 function login() {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const count = useSelector((state) => state.login);
+  const [login] = usePostLoginMutation();
 
   const onFinish = () => {
-    dispatch(loginFill({ ...form.getFieldsValue()}));
+    login(form.getFieldsValue);
   };
 
   return (

@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    // nome = "",
-    // email = "",
-    // isAdmin = false,
-    email: "",
-    senha: "",
+    nome:  "",
+    email:"",
+    isAdmin: false,
 };
 
 export const loginSlice = createSlice({
@@ -13,10 +11,9 @@ export const loginSlice = createSlice({
     initialState,
     reducers: {
         loginFill: (state, action) => {
-            // state.nome = action.payload.nome;
+            state.nome = action.payload.nome;
             state.email = action.payload.email;
-            // state.isAdmin = action.payload.isAdmin;
-            state.senha = action.payload.senha
+            state.isAdmin = action.payload.isAdmin;
         }
     }
 });
