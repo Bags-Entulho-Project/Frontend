@@ -1,7 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { create } from "axios";
 import { baseQuery } from "../../../Api";
-import { build } from "vite";
 import { data } from "react-router-dom";
 
 export const authApi = create({

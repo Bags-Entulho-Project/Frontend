@@ -4,7 +4,7 @@ const initialState = {
   alocacao: [],
 };
 
-const alocacaoSlice = createSlice({
+export const alocacaoSlice = createSlice({
   name: "alocacao",
   initialState,
   reducers: {

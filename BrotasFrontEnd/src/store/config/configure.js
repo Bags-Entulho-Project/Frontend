@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { pessoaSlice } from "../slices/pessoa/pessoa";
+import { alocacaoSlice }  from "../slices/alocacao/alocacao";
 import { bagSlice } from "../slices/bag/bag";
-import { alocacaoSlice } from "../slices/alocacao/alocacao";
-import { loginSlice } from "../slices/login/login";
-import { loginApi } from "../slices/login/queries";
+import { loginSlice } from "../slices/auth/login";
+import { authApi } from "../slices/auth/queries";
 
 export const store = configureStore({
   reducer: {
@@ -11,10 +11,10 @@ export const store = configureStore({
     bag: bagSlice,
     alocacao: alocacaoSlice,
     login: loginSlice,
-    [loginApi.reducerPath]: loginApi.reducer,
+    [authApi.reducerPath]: authApi.reducer,
   },
 
-  middleware: (getDefaultMiddleware) => {
-    getDefaultMiddleware().prepend(loginApi.middleware);
-  },
+  middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().prepend(authApi.middleware)
+  
 });

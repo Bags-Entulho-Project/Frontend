@@ -1,9 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../../Api";
-import { build } from "vite";
 
-export const loginApi = createApi({
-  reducerPath: "loginApi",
+export const authApi = createApi({
+  reducerPath: "authApi",
   baseQuery: baseQuery({
     headers: { "Content-Type": "application/json" },
   }),
@@ -32,4 +31,4 @@ export const loginApi = createApi({
   }),
 });
 
-export const {usePostLoginMutation} = loginApi
+export const {usePostLoginMutation} = authApi
