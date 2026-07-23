@@ -26,6 +26,11 @@ function DefaultLayout({ children }) {
       key: "3",
       label: <Link to="/alocacao">Alocação</Link>,
       name: "/alocacao",
+    },
+    { 
+      key: "4",
+      label: <Link to="/login">Login</Link>,
+      name: "/login",
     }
   ];
 

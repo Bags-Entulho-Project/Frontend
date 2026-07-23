@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../../Api";
+import { loginFill } from "./login";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -17,6 +18,8 @@ export const authApi = createApi({
                     data: args,
                 }))
                 console.log("responmse", response);
+                dispatch(loginFill(response.data));
+                return response.data;
             }
             catch (err){
                 return {

@@ -1,17 +1,32 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { adicionarPessoa } from "../../store/slices/pessoa/pessoa.js";
 import { useSelector, useDispatch } from "react-redux";
 import { loginFill } from "../../store/slices/auth/login.js";
 import { usePostLoginMutation } from "../../store/slices/auth/queries.js";
+import { useNavigate } from "react-router-dom";
 
 function login() {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const navigation = useNavigate();
   const count = useSelector((state) => state.login);
   const [login] = usePostLoginMutation();
 
   const onFinish = () => {
-    login(form.getFieldsValue());
+    login(form.getFieldsValue())
+      .unwrap()
+      .then(() => {
+        message.success({
+          content: "Login realizado! redirecionando em segundos...",
+          duration: 1,
+          onClose: () => {
+            navigation("/home");
+          },
+        });
+      })
+      .catch(() => {
+        message.error("Desculpe, houve um erro!");
+      });
   };
 
   return (
