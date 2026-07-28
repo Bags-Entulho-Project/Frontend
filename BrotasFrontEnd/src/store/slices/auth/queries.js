@@ -17,7 +17,6 @@ export const authApi = createApi({
                     method: "POST",
                     data: args,
                 }))
-                console.log("responmse", response);
                 dispatch(loginFill(response.data));
                 return response.data;
             }

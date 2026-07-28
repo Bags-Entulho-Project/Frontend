@@ -32,6 +32,12 @@ export const pessoaSlice = createSlice({
     tirarPessoa: (state, action) => {
       state.pessoa = state.pessoa.filter((p) => p.id !== action.payload.id);
     },
+
+    getPessoa: (state, action) => {
+      state.pessoa = action.payload.map((pessoa) => {
+        return { ...pessoa, key: pessoa.id }
+      })
+    }
   },
 });
 

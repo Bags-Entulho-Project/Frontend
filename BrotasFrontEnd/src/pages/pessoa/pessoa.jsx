@@ -106,7 +106,7 @@ function pessoa() {
       dispatch(
         adicionarPessoa({ id: pessoas.length, key: pessoas.length, ...values }),
       );
-      console.log("pessoa", pessoas)
+      console.log("pessoa", pessoas);
     }
     form.resetFields();
     setIsOpen(false);
