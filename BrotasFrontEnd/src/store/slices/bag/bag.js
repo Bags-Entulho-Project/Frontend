@@ -28,7 +28,6 @@ export const bagSlice = createSlice({
 
     changeStatus: (state, action) => {
       var editar = state.bag.find((b) => b.id == action.payload.id);
-      console.log("editos changlog", !editar.disponivel)
       editar.disponivel = !editar.disponivel;
     },
 

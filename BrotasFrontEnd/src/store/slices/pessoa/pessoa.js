@@ -13,20 +13,39 @@ const initialState = {
   ],
 };
 
+// const initialStateQUE_E_PRA_SER = {
+//   pessoa: [
+//     {
+//       id: 0,
+//       nome: "jose",
+//       isCancel: false,
+//     }
+//   ]
+// }
+
 export const pessoaSlice = createSlice({
   name: "pessoa",
   initialState,
   reducers: {
     adicionarPessoa: (state, action) => {
-      state.pessoa.push({...action.payload});
+      const payload = Array.isArray(action.payload)
+        ? action.payload
+        : [action.payload];
+
+      payload.forEach((pessoa) => {
+        state.pessoa.push({
+          ...pessoa,
+          key: pessoa.id ,
+        });
+      });
     },
 
-    editarPessoa:(state, action) =>{
+    editarPessoa: (state, action) => {
       let editar = state.pessoa.find((p) => p.id == action.payload.id);
       editar.nome = action.payload.nome;
       editar.cpf = action.payload.cpf;
       editar.fone = action.payload.fone;
-      editar.celular = action.payload.celular
+      editar.celular = action.payload.celular;
     },
 
     tirarPessoa: (state, action) => {
@@ -35,11 +54,12 @@ export const pessoaSlice = createSlice({
 
     getPessoa: (state, action) => {
       state.pessoa = action.payload.map((pessoa) => {
-        return { ...pessoa, key: pessoa.id }
-      })
-    }
+        return { ...pessoa, key: pessoa.id };
+      });
+    },
   },
 });
 
-export const { adicionarPessoa, editarPessoa, tirarPessoa } = pessoaSlice.actions;
+export const { adicionarPessoa, editarPessoa, tirarPessoa } =
+  pessoaSlice.actions;
 export default pessoaSlice.reducer;

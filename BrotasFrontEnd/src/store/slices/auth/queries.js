@@ -23,7 +23,7 @@ export const authApi = createApi({
             catch (err){
                 return {
             error: {
-              status: "FETCH_USERS_ERROR",
+              status: "FETCH_LOGIN_ERROR",
               error: err,
             },
           };

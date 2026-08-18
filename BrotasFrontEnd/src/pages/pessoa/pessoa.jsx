@@ -7,6 +7,7 @@ import {
   Drawer,
   Input,
   Popover,
+  Space,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
@@ -17,14 +18,27 @@ import {
   tirarPessoa,
 } from "../../store/slices/pessoa/pessoa";
 import { CirclePlus } from "lucide-react";
+import { usePostPessoaMutation } from "../../store/slices/pessoa/queries";
 
-function pessoa() {
-  const pessoas = useSelector((state) => state.pessoa.pessoa);
+function Pessoa() {
+  const pessoas = useSelector((state) => state.pessoa.pessoa || []);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState();
+  const [id, setId] = useState(null);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const [postPessoa] = usePostPessoaMutation();
+
+  const imovelColumns = [
+    { title: "IPTU", dataIndex: "iptu", key: "iptu" },
+    { title: "Logradouro", dataIndex: "logradouro", key: "logradouro" },
+    { title: "Número", dataIndex: "numero", key: "numero" },
+    { title: "CEP", dataIndex: "cep", key: "cep" },
+    { title: "Bairro", dataIndex: "bairro", key: "bairro" },
+    { title: "Cidade", dataIndex: "cidade", key: "cidade" },
+    { title: "UF", dataIndex: "uf", key: "uf" },
+    { title: "Complemento", dataIndex: "complemento", key: "complemento"}
+  ];
 
   const columns = [
     {
@@ -33,7 +47,7 @@ function pessoa() {
       key: "nome",
     },
     {
-      title: "Cpf",
+      title: "CPF",
       dataIndex: "cpf",
       key: "cpf",
     },
@@ -71,6 +85,16 @@ function pessoa() {
                       cpf: record.cpf,
                       fone: record.fone,
                       celular: record.celular,
+                      imoveis: record.imoveis || [
+                        {
+                          logradouro: "",
+                          numero: "",
+                          cep: "",
+                          bairro: "",
+                          cidade: "",
+                          uf: "",
+                        },
+                      ],
                     });
                     setId(record.id);
                     setIsOpen(true);
@@ -100,14 +124,17 @@ function pessoa() {
   ];
 
   const handleSubmit = (values) => {
+    const payload = {
+      ...values,
+      imoveis: values.imoveis || [],
+    };
+
     if (isEditing) {
-      dispatch(editarPessoa({ id: id, ...values }));
+      dispatch(editarPessoa({ id, ...payload }));
     } else {
-      dispatch(
-        adicionarPessoa({ id: pessoas.length, key: pessoas.length, ...values }),
-      );
-      console.log("pessoa", pessoas);
+      postPessoa({ ...payload });
     }
+
     form.resetFields();
     setIsOpen(false);
     setIsEditing(false);
@@ -137,16 +164,49 @@ function pessoa() {
             <Table
               dataSource={pessoas}
               columns={columns}
+              rowKey="id"
+              expandable={{
+                expandedRowRender: (record) => (
+                  <Table
+                    columns={imovelColumns}
+                    dataSource={record.imoveis || []}
+                    pagination={false}
+                    size="small"
+                    rowKey={(row, index) =>
+                      `${record.id}-imovel-${index}-${row.cep || "sem-cep"}`
+                    }
+                  />
+                ),
+                rowExpandable: (record) => (record.imoveis || []).length > 0,
+              }}
               style={{ width: "130vh" }}
             />
           </Card>
+
           <Drawer
-            title="Adicionar Pessoa"
+            title={isEditing ? "Editar Pessoa" : "Adicionar Pessoa"}
             open={isOpen}
             onClose={handleCancel}
-            size={420}
+            size={520}
           >
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+              initialValues={{
+                imoveis: [
+                  {
+                    iptu: "",
+                    logradouro: "",
+                    numero: "",
+                    cep: "",
+                    bairro: "",
+                    cidade: "",
+                    uf: "",
+                  },
+                ],
+              }}
+            >
               <Form.Item
                 label="Nome"
                 name="nome"
@@ -171,11 +231,122 @@ function pessoa() {
                 <Input placeholder="Digite o celular" />
               </Form.Item>
 
+              <Form.List name="imoveis">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }, index) => (
+                      <Card
+                        key={key}
+                        size="small"
+                        style={{
+                          marginBottom: 12,
+                          background: "#fafafa",
+                        }}
+                        title={`Imóvel ${index + 1}`}
+                        extra={
+                          <Button
+                            danger
+                            type="text"
+                            onClick={() => remove(name)}
+                          >
+                            Remover
+                          </Button>
+                        }
+                      >
+                        <Form.Item
+                          {...restField}
+                          label="IPTU"
+                          name={[name, "iptu"]}
+                        >
+                          <Input placeholder="Iptu do imovel" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="Logradouro"
+                          name={[name, "logradouro"]}
+                        >
+                          <Input placeholder="Rua / Avenida" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="Número"
+                          name={[name, "numero"]}
+                        >
+                          <Input placeholder="123" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="CEP"
+                          name={[name, "cep"]}
+                        >
+                          <Input placeholder="18000-000" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="Bairro"
+                          name={[name, "bairro"]}
+                        >
+                          <Input placeholder="Centro" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="Cidade"
+                          name={[name, "cidade"]}
+                        >
+                          <Input placeholder="Bauru" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="UF"
+                          name={[name, "uf"]}
+                        >
+                          <Input placeholder="SP" />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          label="Complemento"
+                          name={[name, "complemento"]}
+                        >
+                          <Input placeholder="Informações adicionais" />
+                        </Form.Item>
+                      </Card>
+                    ))}
+
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        block
+                        onClick={() =>
+                          add({
+                            logradouro: "",
+                            numero: "",
+                            cep: "",
+                            bairro: "",
+                            cidade: "",
+                            uf: "",
+                          })
+                        }
+                      >
+                        + Adicionar imóvel
+                      </Button>
+                    </Form.Item>
+                  </>
+                )}
+              </Form.List>
+
               <div
                 style={{
                   display: "flex",
                   justifyContent: "flex-end",
                   gap: "8px",
+                  marginTop: "16px",
                 }}
               >
                 <Button onClick={handleCancel}>Cancelar</Button>
@@ -191,4 +362,4 @@ function pessoa() {
   );
 }
 
-export default pessoa;
+export default Pessoa;
