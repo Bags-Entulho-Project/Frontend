@@ -1,7 +1,6 @@
-import { Breadcrumb, ConfigProvider, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { Link, useLocation } from "react-router-dom";
-import { useMemo } from "react";
 
 function DefaultLayout({ children }) {
   const location = useLocation();
@@ -34,14 +33,7 @@ function DefaultLayout({ children }) {
     }
   ];
 
-  const selectedKey = useMemo(() => {
-    const pathMap = items.reduce((acc, item) => {
-      acc[item.name] = item.key;
-      return acc;
-    }, {});
-
-    return pathMap[location.pathname];
-  }, [location.pathname]);
+  const selectedKey = items.find((item) => item.name === location.pathname)?.key;
 
   return (
     <Layout style={{ minHeight: "100vh" }}>

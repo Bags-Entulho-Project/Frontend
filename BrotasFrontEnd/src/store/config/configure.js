@@ -4,7 +4,7 @@ import  alocacaoSlice   from "../slices/alocacao/alocacao";
 import  bagSlice  from "../slices/bag/bag";
 import  loginSlice  from "../slices/auth/login";
 import { authApi }  from "../slices/auth/queries";
-import { pessoaApi } from "../slices/pessoa/queries";
+import { catalogApi } from "../services/catalogApi";
 
 export const store = configureStore({
   reducer: {
@@ -13,10 +13,10 @@ export const store = configureStore({
     alocacao: alocacaoSlice,
     login: loginSlice,
     [authApi.reducerPath]: authApi.reducer,
-    [pessoaApi.reducerPath]: pessoaApi.reducer,
+    [catalogApi.reducerPath]: catalogApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(authApi.middleware, pessoaApi.middleware)
+    getDefaultMiddleware().concat(authApi.middleware, catalogApi.middleware)
   
 });

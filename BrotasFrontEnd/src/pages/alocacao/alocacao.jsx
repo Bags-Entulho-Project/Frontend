@@ -1,4 +1,5 @@
 import {
+  App as AntApp,
   Button,
   Card,
   Drawer,
@@ -10,220 +11,249 @@ import {
   Table,
 } from "antd";
 import { Content } from "antd/es/layout/layout";
-import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import {
-  adicionarAlocacao,
-  devolverAlocacao,
-  editarAlocacao,
-  excluirAlocacao,
-} from "../../store/slices/alocacao/alocacao";
+import { useSelector } from "react-redux";
 import { CirclePlus } from "lucide-react";
-import { changeStatus } from "../../store/slices/bag/bag";
+import {
+  useAlterarStatusAlocacaoMutation,
+  useAtualizarAlocacaoMutation,
+  useCriarAlocacaoMutation,
+  useDevolverAlocacaoMutation,
+  useGetAlocacoesQuery,
+  useGetBagsQuery,
+  useGetPessoasQuery,
+} from "../../store/services/catalogApi";
 
-function alocacao() {
-  const alocacoes = useSelector((state) => state.alocacao.alocacao);
-  const pessoas = useSelector((state) => state.pessoa.pessoa);
-  const bags = useSelector((state) => state.bag.bag);
+const errorMessage = (error) =>
+  error?.data?.message ||
+  error?.data ||
+  "Não foi possível concluir a operação.";
+const formatarData = (data) =>
+  data &&
+  new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(data));
+
+function Alocacao() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [id, setId] = useState();
-  const [oldId, setOldId] = useState();
+  const [selectedPessoaId, setSelectedPessoaId] = useState(null);
+  const [selectedBagId, setSelectedBagId] = useState(null);
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
+  const { message } = AntApp.useApp();
+  const pessoas = useSelector((state) => state.pessoa.pessoa);
+  const bags = useSelector((state) => state.bag.bag);
+  const { data: alocacoes = [], isFetching } = useGetAlocacoesQuery();
+  useGetPessoasQuery();
+  useGetBagsQuery();
+  const [criarAlocacao] = useCriarAlocacaoMutation();
+  const [atualizarAlocacao] = useAtualizarAlocacaoMutation();
+  const [devolverAlocacao] = useDevolverAlocacaoMutation();
+  const [alterarStatusAlocacao] = useAlterarStatusAlocacaoMutation();
 
+  const closeDrawer = () => {
+    form.resetFields();
+    setIsOpen(false);
+    setIsEditing(false);
+    setSelectedPessoaId(null);
+    setSelectedBagId(null);
+  };
+  const abrirNovo = () => {
+    form.resetFields();
+    setIsEditing(false);
+    setIsOpen(true);
+  };
+  const editar = (alocacao) => {
+    form.setFieldsValue({
+      id: alocacao.id,
+      pessoaId: alocacao.pessoaId,
+      bagId: alocacao.bagId,
+    });
+    setSelectedPessoaId(alocacao.pessoaId);
+    setSelectedBagId(alocacao.bagId);
+    setIsEditing(true);
+    setIsOpen(true);
+  };
+  const handleSubmit = async (values) => {
+    try {
+      if (isEditing) {
+        await atualizarAlocacao(values).unwrap();
+        message.success("Alocação atualizada.");
+      } else {
+        await criarAlocacao(values).unwrap();
+        message.success("Alocação registrada.");
+      }
+      closeDrawer();
+    } catch (error) {
+      message.error(errorMessage(error));
+    }
+  };
+  const devolver = async (alocacao) => {
+    try {
+      await devolverAlocacao({
+        id: alocacao.id,
+      }).unwrap();
+      message.success("Devolução registrada.");
+    } catch (error) {
+      message.error(errorMessage(error));
+    }
+  };
+  const inativar = async (id) => {
+    try {
+      await alterarStatusAlocacao(id).unwrap();
+      message.success("Alocação inativada.");
+    } catch (error) {
+      message.error(errorMessage(error));
+    }
+  };
+
+  const pessoasDisponiveis = pessoas.filter(
+    (pessoa) =>
+      pessoa.quantidadeAlocacoes < 2 || pessoa.id === selectedPessoaId,
+  );
+  const bagsDisponiveis = bags.filter(
+    (bag) => bag.disponivel || bag.id === selectedBagId,
+  );
   const columns = [
     {
       title: "Pessoa",
-      dataIndex: "pessoa",
-      key: "pessoa",
+      dataIndex: "pessoaId",
+      render: (id) =>
+        pessoas.find((pessoa) => pessoa.id === id)?.nome || `Pessoa #${id}`,
     },
     {
       title: "Bag",
-      dataIndex: "bag",
-      key: "bag",
-      render: id => bags.find((b) => b.id == id).numero,
+      dataIndex: "bagId",
+      render: (id) => bags.find((bag) => bag.id === id)?.numero || `Bag #${id}`,
     },
-    {
-      title: "Entrega",
-      dataIndex: "entrega",
-      key: "entrega",
-    },
+    { title: "Entrega", dataIndex: "entrega", render: formatarData },
     {
       title: "Devolução",
       dataIndex: "devolucao",
-      key: "devolucao",
+      render: (data) => formatarData(data) || "Pendente",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (status) => (status === "devolvida" ? "Devolvida" : "Alocada"),
     },
     {
       title: "Ações",
       key: "actions",
-      width: "100px",
+      width: 100,
       className: "action-column",
       render: (_, record) => (
         <Popover
-          content={
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  flexDirection: "row-reverse",
-                }}
-              >
-                <Button
-                  size="small"
-                  onClick={() => {
-                    form.setFieldsValue({
-                      pessoa: record.pessoa,
-                      bag: record.bag,
-                    });
-                    setId(record.id);
-                    setOldId(record.bag)
-                    setIsOpen(true);
-                    setIsEditing(true);
-                  }}
-                >
-                  Editar
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    dispatch(devolverAlocacao({ id: record.id }));
-                    dispatch(changeStatus({id: record.bag}));
-                  }}
-                >
-                  Devolver
-                </Button>
-                <Button
-                  size="small"
-                  danger
-                  onClick={() => {
-                    dispatch(excluirAlocacao({ id: record.id }))
-                    dispatch(changeStatus({id: record.bag}))
-                }}
-                >
-                  Excluir
-                </Button>
-              </div>
-            </>
-          }
           trigger="click"
+          content={
+            <div
+              style={{ display: "flex", gap: 8, flexDirection: "row-reverse" }}
+            >
+              <Button
+                size="small"
+                disabled={Boolean(record.devolucao)}
+                onClick={() => editar(record)}
+              >
+                Editar
+              </Button>
+              <Button
+                size="small"
+                disabled={Boolean(record.devolucao)}
+                onClick={() => devolver(record)}
+              >
+                Devolver
+              </Button>
+              <Button size="small" danger onClick={() => inativar(record.id)}>
+                Inativar
+              </Button>
+            </div>
+          }
         >
           <Button
-            type={"text"}
+            type="text"
             icon={<CirclePlus cursor="pointer" color="#001529" opacity={0.5} />}
-          ></Button>
+          />
         </Popover>
       ),
     },
   ];
 
-  const handleSubmit = (values) => {
-    if (isEditing) {
-      dispatch(editarAlocacao({ id: id, ...values }));
-      if(values.bag !== oldId){
-        dispatch(changeStatus({id: oldId}))
-      }
-    } else {
-      dispatch(
-        adicionarAlocacao({
-          id: alocacoes.length,
-          key: alocacoes.length,
-          entrega: new Date().toLocaleString("pt-BR"),
-          devolucao: null,
-          ...values,
-        }),
-      );
-      dispatch(changeStatus({id: values.bag}))
-    }
-    form.resetFields();
-    setIsOpen(false);
-    setIsEditing(false);
-    setId(null);
-  };
-
-  const handleCancel = () => {
-    form.resetFields();
-    setIsOpen(false);
-    setIsEditing(false);
-    setId(null);
-  };
-
   return (
-    <>
-      <Layout className="card-tables">
-        <Content>
-          <Card
-            title="Tabela de Alocações"
-            classNames={{ header: "card-table-head" }}
-            extra={
-              <Button type="primary" onClick={() => setIsOpen(true)}>
-                Novo
+    <Layout className="card-tables">
+      <Content>
+        <Card
+          title="Tabela de Alocações"
+          classNames={{ header: "card-table-head" }}
+          extra={
+            <Button type="primary" onClick={abrirNovo}>
+              Novo
+            </Button>
+          }
+        >
+          <Table
+            dataSource={alocacoes}
+            columns={columns}
+            rowKey="id"
+            loading={isFetching}
+            style={{ width: "130vh" }}
+          />
+        </Card>
+        <Drawer
+          title={isEditing ? "Editar Alocação" : "Adicionar Alocação"}
+          open={isOpen}
+          onClose={closeDrawer}
+          size={420}
+        >
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
+            <Form.Item name="id" hidden>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Pessoa"
+              name="pessoaId"
+              rules={[{ required: true, message: "Informe a pessoa" }]}
+            >
+              <Select
+                showSearch
+                optionFilterProp="label"
+                placeholder="Selecione uma pessoa"
+                onChange={setSelectedPessoaId}
+                options={pessoasDisponiveis.map((pessoa) => ({
+                  label: `${pessoa.nome} (${pessoa.quantidadeAlocacoes}/2)`,
+                  value: pessoa.id,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Bag"
+              name="bagId"
+              rules={[{ required: true, message: "Informe uma bag" }]}
+            >
+              <Select
+                showSearch
+                optionFilterProp="label"
+                placeholder="Selecione uma bag"
+                onChange={setSelectedBagId}
+                options={bagsDisponiveis.map((bag) => ({
+                  label: bag.numero,
+                  value: bag.id,
+                }))}
+              />
+            </Form.Item>
+            <div
+              style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}
+            >
+              <Button onClick={closeDrawer}>Cancelar</Button>
+              <Button type="primary" htmlType="submit">
+                {isEditing ? "Salvar alterações" : "Salvar"}
               </Button>
-            }
-          >
-            <Table
-              dataSource={alocacoes}
-              columns={columns}
-              style={{ width: "130vh" }}
-            />
-          </Card>
-          <Drawer
-            title="Adicionar Alocação"
-            open={isOpen}
-            onClose={handleCancel}
-            size={420}
-          >
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                label="Pessoa"
-                name="pessoa"
-                rules={[{ required: true, message: "Informe a pessoa" }]}
-              >
-                <Select
-                  showSearch={{ optionFilterProp: "label" }}
-                  placeholder="Selecione uma pessoa"
-                  options={pessoas.map((p) => ({
-                    label: p.nome,
-                    value: p.nome,
-                  }))}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Bag"
-                name="bag"
-                rules={[{ required: true, message: "Informe uma Bag" }]}
-              >
-                <Select
-                  showSearch={{ optionFilterProp: "label" }}
-                  placeholder="Selecione uma bag"
-                  options={bags
-                    .filter((b) => b.disponivel)
-                    .map((b) => ({
-                      label: b.numero,
-                      value: b.id,
-                    }))}
-                />
-              </Form.Item>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "8px",
-                }}
-              >
-                <Button onClick={handleCancel}>Cancelar</Button>
-                <Button type="primary" htmlType="submit">
-                  {isEditing ? "Editar" : "Salvar"}
-                </Button>
-              </div>
-            </Form>
-          </Drawer>
-        </Content>
-      </Layout>
-    </>
+            </div>
+          </Form>
+        </Drawer>
+      </Content>
+    </Layout>
   );
 }
 
-export default alocacao;
+export default Alocacao;

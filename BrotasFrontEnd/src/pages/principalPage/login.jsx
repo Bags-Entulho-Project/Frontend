@@ -1,15 +1,10 @@
 import { Form, Input, Button, message } from "antd";
-import { adicionarPessoa } from "../../store/slices/pessoa/pessoa.js";
-import { useSelector, useDispatch } from "react-redux";
-import { loginFill } from "../../store/slices/auth/login.js";
 import { usePostLoginMutation } from "../../store/slices/auth/queries.js";
 import { useNavigate } from "react-router-dom";
 
-function login() {
+function Login() {
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
   const navigation = useNavigate();
-  const count = useSelector((state) => state.login);
   const [login] = usePostLoginMutation();
 
   const onFinish = () => {
@@ -56,4 +51,4 @@ function login() {
   );
 }
 
-export default login;
+export default Login;
