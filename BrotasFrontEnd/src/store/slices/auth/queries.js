@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../../../Api";
-import { loginFill } from "./login";
+import { changeIsAuthenticate, loginFill } from "./login";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -18,6 +18,7 @@ export const authApi = createApi({
                     data: args,
                 }))
                 dispatch(loginFill(response.data));
+                dispatch(changeIsAuthenticate(true))
                 return response.data;
             }
             catch (err){
@@ -29,8 +30,14 @@ export const authApi = createApi({
           };
             }
         },
+    }),
+    checkSession: build.mutation({
+      query: () => ({url: "auth/check-session", method: "POST"})
+    }),
+    logout: build.mutation({
+      query: () => ({url: "auth/logout", method: "POST"})
     })
   }),
 });
 
-export const {usePostLoginMutation} = authApi
+export const {usePostLoginMutation, useCheckSessionMutation, useLogoutMutation} = authApi

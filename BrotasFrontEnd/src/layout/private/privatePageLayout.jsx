@@ -1,19 +1,19 @@
 import { App, ConfigProvider } from "antd";
-import DefaultLayout from "./defaultLayout";
+import PrivateLayout from "./privateLayout";
 import { Outlet } from "react-router-dom";
 
-function pageLayout() {
+function privatePageLayout() {
   return (
     <>
       <ConfigProvider>
         <App>
-          <DefaultLayout>
+          <PrivateLayout>
             <Outlet />
-          </DefaultLayout>
+          </PrivateLayout>
         </App>
       </ConfigProvider>
     </>
   );
 }
 
-export default pageLayout;
+export default privatePageLayout;

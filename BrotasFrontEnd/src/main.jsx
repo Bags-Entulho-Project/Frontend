@@ -1,13 +1,14 @@
-import { StrictMode } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import Apps from "./App.jsx";
 import { App, ConfigProvider } from "antd";
-import { store } from "./store/config/configure.js";
+import { persistor, store } from "./store/config/configure.js";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <React.StrictMode>
     <ConfigProvider
       theme={{
         components: {
@@ -19,11 +20,13 @@ createRoot(document.getElementById("root")).render(
     >
       <BrowserRouter>
         <Provider store={store}>
-          <App>
-            <Apps />
-          </App>
+          <PersistGate loading={null} persistor={persistor}>
+            <App>
+              <Apps />
+            </App>
+          </PersistGate>
         </Provider>
       </BrowserRouter>
     </ConfigProvider>
-  </StrictMode>,
+  </React.StrictMode>,
 );
